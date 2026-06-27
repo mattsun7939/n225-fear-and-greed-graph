@@ -41,7 +41,8 @@ function getFearAndGreedHistory() {
           score: data.score,
           rating: data.rating,
           indicators: data.indicators || [],
-          rawTimestamp: data.timestamp
+          rawTimestamp: data.timestamp,
+          n225Price: data.n225Price
         });
       } catch (err) {
         console.error(`Error reading ${file}:`, err);
