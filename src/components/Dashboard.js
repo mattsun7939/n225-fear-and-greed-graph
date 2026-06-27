@@ -2,9 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import {
-  AreaChart,
+  ComposedChart,
   Area,
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -327,7 +326,7 @@ export default function Dashboard({ initialHistory }) {
             {/* Recharts Container */}
             <div className="w-full h-80 sm:h-96 relative">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
+                <ComposedChart
                   data={filteredHistory}
                   margin={{ top: 10, right: 5, left: -25, bottom: 0 }}
                   onMouseMove={(state) => {
@@ -451,7 +450,7 @@ export default function Dashboard({ initialHistory }) {
                       activeDot={{ r: 4 }}
                     />
                   )}
-                </AreaChart>
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
 
