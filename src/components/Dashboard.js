@@ -56,6 +56,7 @@ export default function Dashboard({ initialHistory }) {
     safe_haven_demand: false
   });
   const [selectedHoverData, setSelectedHoverData] = useState(null);
+  const [showNikkei, setShowNikkei] = useState(true);
 
   // If no data
   if (!initialHistory || initialHistory.length === 0) {
@@ -211,6 +212,11 @@ export default function Dashboard({ initialHistory }) {
                 </span>
                 <span className={`w-2.5 h-2.5 rounded-full ${sentimentColors[activeHoverData.rating]?.dot || 'bg-zinc-400'} ${sentimentColors[activeHoverData.rating]?.glow || ''} shadow-lg`} />
               </div>
+              {activeHoverData.n225Price && (
+                <p className="text-sm font-semibold text-zinc-300">
+                  日経平均: <span className="text-amber-400">¥{activeHoverData.n225Price.toLocaleString()}</span>
+                </p>
+              )}
               <p className="text-zinc-500 text-xs">
                 Selected Date: <span className="text-zinc-300 font-semibold">{activeHoverData.date}</span>
                 {selectedHoverData && <span className="ml-1 text-zinc-500 font-normal hover:text-white cursor-pointer underline" onClick={() => setSelectedHoverData(null)}>(Reset to Latest)</span>}
@@ -352,6 +358,7 @@ export default function Dashboard({ initialHistory }) {
                   />
                   
                   <YAxis 
+                    yAxisId="left"
                     domain={[0, 100]} 
                     stroke="#71717a" 
                     fontSize={10} 
@@ -360,16 +367,52 @@ export default function Dashboard({ initialHistory }) {
                     dx={-5}
                   />
 
+                  {showNikkei && (
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={['dataMin - 1000', 'dataMax + 1000']}
+                      stroke="#fbbf24"
+                      fontSize={10}
+                      tickLine={false}
+                      axisLine={false}
+                      dx={5}
+                      tickFormatter={(val) => `¥${val.toLocaleString()}`}
+                    />
+                  )}
+
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#18181b',
+                      borderColor: '#27272a',
+                      borderRadius: '12px',
+                      color: '#f4f4f5'
+                    }}
+                    itemStyle={{ color: '#a1a1aa' }}
+                    labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
+                    formatter={(value, name) => {
+                      if (name === 'Nikkei 225') {
+                        return [`¥${value.toLocaleString()}`, 'Nikkei 225'];
+                      }
+                      if (name === 'Fear & Greed Index') {
+                        return [value, 'Fear & Greed Index'];
+                      }
+                      return [value, name];
+                    }}
+                  />
+
                   {/* Horizontal Threshold references */}
-                  <ReferenceLine y={75} stroke="#06b6d4" strokeDasharray="3 3" opacity={0.4} label={{ value: 'E.Greed', fill: '#06b6d4', fontSize: 8, position: 'insideRight' }} />
-                  <ReferenceLine y={55} stroke="#10b981" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Greed', fill: '#10b981', fontSize: 8, position: 'insideRight' }} />
-                  <ReferenceLine y={45} stroke="#eab308" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Neutral', fill: '#eab308', fontSize: 8, position: 'insideRight' }} />
-                  <ReferenceLine y={25} stroke="#f97316" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Fear', fill: '#f97316', fontSize: 8, position: 'insideRight' }} />
+                  <ReferenceLine yAxisId="left" y={75} stroke="#06b6d4" strokeDasharray="3 3" opacity={0.4} label={{ value: 'E.Greed', fill: '#06b6d4', fontSize: 8, position: 'insideRight' }} />
+                  <ReferenceLine yAxisId="left" y={55} stroke="#10b981" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Greed', fill: '#10b981', fontSize: 8, position: 'insideRight' }} />
+                  <ReferenceLine yAxisId="left" y={45} stroke="#eab308" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Neutral', fill: '#eab308', fontSize: 8, position: 'insideRight' }} />
+                  <ReferenceLine yAxisId="left" y={25} stroke="#f97316" strokeDasharray="3 3" opacity={0.4} label={{ value: 'Fear', fill: '#f97316', fontSize: 8, position: 'insideRight' }} />
 
                   {/* Overall Index Score Area */}
                   <Area
+                    yAxisId="left"
                     type="monotone"
                     dataKey="score"
+                    name="Fear & Greed Index"
                     stroke="#f4f4f5"
                     strokeWidth={2.5}
                     fillOpacity={1}
@@ -381,17 +424,33 @@ export default function Dashboard({ initialHistory }) {
                   {Object.entries(visibleIndicators).map(([key, isVisible]) => {
                     if (!isVisible) return null;
                     return (
-                      <Line
-                        key={key}
-                        type="monotone"
-                        dataKey={key}
-                        stroke={indicatorDetails[key].color}
-                        strokeWidth={1.5}
-                        dot={false}
-                        activeDot={{ r: 4 }}
-                      />
+                       <Line
+                         yAxisId="left"
+                         key={key}
+                         type="monotone"
+                         dataKey={key}
+                         name={indicatorDetails[key].label}
+                         stroke={indicatorDetails[key].color}
+                         strokeWidth={1.5}
+                         dot={false}
+                         activeDot={{ r: 4 }}
+                       />
                     );
                   })}
+
+                  {/* Superimposed Nikkei 225 Line */}
+                  {showNikkei && (
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="n225Price"
+                      name="Nikkei 225"
+                      stroke="#fbbf24"
+                      strokeWidth={2.5}
+                      dot={false}
+                      activeDot={{ r: 4 }}
+                    />
+                  )}
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -400,6 +459,19 @@ export default function Dashboard({ initialHistory }) {
             <div className="border-t border-zinc-800/50 pt-5">
               <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Compare Indicators</h4>
               <div className="flex flex-wrap gap-2.5">
+                {/* Nikkei 225 Toggle */}
+                <button
+                  onClick={() => setShowNikkei(!showNikkei)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-2 transition-all duration-200 ${
+                    showNikkei
+                      ? 'bg-amber-950/40 text-amber-400 border-amber-800/60 shadow-lg shadow-amber-500/5'
+                      : 'bg-zinc-950 text-zinc-500 border-zinc-900 hover:border-zinc-700 hover:text-zinc-350'
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-md shadow-amber-500/20" />
+                  Nikkei 225 Price
+                </button>
+
                 {Object.entries(indicatorDetails).map(([key, detail]) => {
                   const isActive = visibleIndicators[key];
                   return (

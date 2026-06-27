@@ -79,6 +79,7 @@ export default async function Home() {
       rating: item.rating,
       rawTimestamp: item.rawTimestamp,
       indicators: item.indicators,
+      n225Price: item.n225Price,
       ...indicatorsMap
     };
   });
