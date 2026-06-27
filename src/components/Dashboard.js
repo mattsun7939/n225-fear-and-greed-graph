@@ -366,19 +366,18 @@ export default function Dashboard({ initialHistory }) {
                     dx={-5}
                   />
 
-                  {showNikkei && (
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      domain={['dataMin - 1000', 'dataMax + 1000']}
-                      stroke="#fbbf24"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                      dx={5}
-                      tickFormatter={(val) => `¥${val.toLocaleString()}`}
-                    />
-                  )}
+                  <YAxis
+                    yAxisId="right"
+                    orientation="right"
+                    domain={['auto', 'auto']}
+                    stroke="#fbbf24"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    dx={5}
+                    tickFormatter={(val) => `¥${val.toLocaleString()}`}
+                    hide={!showNikkei}
+                  />
 
                   <Tooltip
                     contentStyle={{
@@ -438,18 +437,17 @@ export default function Dashboard({ initialHistory }) {
                   })}
 
                   {/* Superimposed Nikkei 225 Line */}
-                  {showNikkei && (
-                    <Line
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="n225Price"
-                      name="Nikkei 225"
-                      stroke="#fbbf24"
-                      strokeWidth={2.5}
-                      dot={false}
-                      activeDot={{ r: 4 }}
-                    />
-                  )}
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="n225Price"
+                    name="Nikkei 225"
+                    stroke="#fbbf24"
+                    strokeWidth={2.5}
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                    hide={!showNikkei}
+                  />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
