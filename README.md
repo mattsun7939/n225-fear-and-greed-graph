@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# n225-fear-and-greed-graph
 
-## Getting Started
+日経平均 (Nikkei 225) の「恐怖と強欲指数 (Fear & Greed Index)」の履歴データを可視化する Next.js ダッシュボードアプリケーションです。
 
-First, run the development server:
+## 特徴
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **リアルタイムデータ統合**: Google Drive 上に毎日保存されるセンチメントデータログ (`data_YYYYMMDD.json`) から自動的に時系列データを読み込み、チャートを構築します。
+- **インサイト可視化**:
+  - 現在のインデックス値とセンチメント判定 (Extreme Fear, Fear, Neutral, Greed, Extreme Greed) を表すサークルゲージ。
+  - `recharts` による美麗なグラデーションエリアチャート。
+  - 期間フィルタリング (1ヶ月、3ヶ月、全期間)。
+- **インジケーター比較**: 各算出要素 (Market Momentum, Stock Price Strength, Breadth, Junk Bond Demand, Volatility, Safe Haven Demand) を選択してグラフ上に同時にプロット可能。
+- **ヒストリカル統計**: 選択期間中の平均値、最高値、最安値、および各センチメントゾーンの滞在日数分布を出力。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## セットアップ & 実行方法
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. 依存関係のインストール:
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. 開発用サーバーの起動:
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+3. ブラウザでアクセス:
+   [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+## データ構成
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+本プロジェクトは以下のディレクトリからデータを読み込みます (優先度順):
+1. Google Drive マウントフォルダ: `/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/`
+2. ローカルフォールバック (同階層 `fear_and_greed_index_for_jp` 内のログフォルダ): `../fear_and_greed_index_for_jp/public/log`
