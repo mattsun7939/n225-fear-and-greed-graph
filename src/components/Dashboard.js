@@ -37,10 +37,11 @@ const sentimentColors = {
 
 const indicatorDetails = {
   market_momentum: { label: 'Market Momentum', color: '#f43f5e', desc: '日経平均の125日移動平均線に対する乖離率。' },
-  stock_price_strength: { label: 'Stock Price Strength', color: '#f59e0b', desc: '日経平均の52週高値・安値に対する現在の株価水準。' },
-  stock_price_breadth: { label: 'Stock Price Breadth', color: '#10b981', desc: '過去20日間の上昇日数割合（騰落の広がり）。' },
+  stock_price_strength: { label: 'Stock Price Strength', color: '#f59e0b', desc: '東証プライムの新高値数と新安値数の比率（個別銘柄の強さ）。' },
+  stock_price_breadth: { label: 'Stock Price Breadth', color: '#10b981', desc: '東証プライムの25日騰落レシオ（市場全体の広がり）。' },
+  margin_trading_sentiment: { label: 'Margin Trading Sentiment', color: '#3b82f6', desc: '個人投資家の心理状態を示す信用評価損益率（国内センチメント）。' },
   junk_bond_demand: { label: 'Junk Bond Demand', color: '#06b6d4', desc: 'グローバルなリスク選好度を示すハイイールド債ETF(HYG)のトレンド。' },
-  market_volatility: { label: 'Market Volatility', color: '#8b5cf6', desc: '日経平均のヒストリカル・ボラティリティ（年率）。数値が高いと恐怖。' },
+  market_volatility: { label: 'Market Volatility', color: '#8b5cf6', desc: 'オプション市場から算出された日経平均VI。数値が低いほど安定。' },
   safe_haven_demand: { label: 'Safe Haven Demand', color: '#ec4899', desc: '株式の直近20日リターンと安全資産需要の対比。' }
 };
 
@@ -50,6 +51,7 @@ export default function Dashboard({ initialHistory }) {
     market_momentum: false,
     stock_price_strength: false,
     stock_price_breadth: false,
+    margin_trading_sentiment: false,
     junk_bond_demand: false,
     market_volatility: false,
     safe_haven_demand: false
