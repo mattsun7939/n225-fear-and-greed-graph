@@ -29,6 +29,10 @@ node scripts/interpolate-missing-dates.js  # 欠損日のログを前後日か�
 ```
 自動テストは設定されていません。
 
+## CI
+
+`.github/workflows/fossa-analysis.yml` — `main`/`master` への push と pull request をトリガーに FOSSA でライセンス・脆弱性スキャンを実行する（`test: true` のためポリシー違反時はCIを落とすQuality Gate構成）。言語・パッケージマネージャのセットアップステップは未設定のままコメントアウトされている。
+
 ## アーキテクチャ
 
 **データソース**: 独自のデータ取得スクリプトは持たず（フェッチ自体は `fear_and_greed_index_for_jp/scripts/fetchData.js` が担当）、`src/app/page.js` の `getFearAndGreedHistory()` が以下の優先順でログディレクトリを探して読み込む:
@@ -49,3 +53,6 @@ node scripts/interpolate-missing-dates.js  # 欠損日のログを前後日か�
 ## ドキュメント
 
 `AGENTS.md`（`CLAUDE.md` から `@AGENTS.md` として参照されるのではなく、本ファイル冒頭に転記済み）以外に、専用の `docs/` ディレクトリはありません。
+
+- `README.md` — 機能一覧・データフローのmermaid図・セットアップ手順・`scripts/`一覧・ディレクトリ構成を日本語でまとめた利用者向けドキュメント。内容は本ファイルとも矛盾なく、実装が変わったら両方の更新が必要。
+- `SECURITY.md` — GitHubテンプレートの雛形のまま（バージョン表・報告手順ともプレースホルダ）で、このプロジェクト固有の内容には未編集。参照する価値はない。
