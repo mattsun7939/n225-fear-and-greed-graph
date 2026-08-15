@@ -73,6 +73,8 @@ npm run dev
 ```
 ブラウザで [http://localhost:3000](http://localhost:3000) にアクセスします。
 
+ポート番号を変更したい場合は `.env.local` に `PORT=xxxx` を追加してください（未設定時はデフォルトの3000番）。
+
 ### 4. 本番ビルド & 起動
 ```bash
 npm run build
@@ -116,7 +118,8 @@ n225-fear-and-greed-graph/
 │   │   └── globals.css               # グローバルスタイル
 │   └── components/
 │       └── Dashboard.js              # メインチャート・統計ダッシュボード (Client Component)
-├── .env.example                      # DRIVE_DIR設定例（.env.localとしてコピーして使用）
+├── run-server.js                     # .env.local/.envのPORTを読み取りnext dev/startを起動するラッパー
+├── .env.example                      # DRIVE_DIR・PORT設定例（.env.localとしてコピーして使用）
 └── package.json
 ```
 

@@ -14,10 +14,12 @@
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
+npm run dev      # http://localhost:3000（.env.localのPORTで変更可、デフォルト3000）
 npm run lint
 npm run build
 ```
+
+`npm run dev` / `npm run start` は直接 `next` を呼ばず、`run-server.js` 経由で起動する。このスクリプトが `.env.local`（無ければ `.env`）内の `PORT=` を正規表現で抽出し `next dev/start -p <PORT>` として渡す。Next.js自身も`.env.local`を自動読み込みするが、それはCLIのポート決定より後に走るため、ポート番号だけはこの薄いラッパー経由にしている（`ch-cast-reviews-analyzer/frontend/run-server.js` と同じパターン）。`next build` はポート待受を行わないため素通しで `next build` を実行する。
 
 データメンテナンス用スクリプト（`scripts/`、`npm run` には登録されておらず `node scripts/xxx.js` で直接実行する）:
 ```bash
