@@ -1,0 +1,30 @@
+name: FOSSA License & Vulnerability Scan
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  fossa-scan:
+    name: FOSSA Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # プロジェクトに応じた言語・パッケージマネージャのセットアップ（例: Node.js, Python, Java等）
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+
+      # FOSSA CLIのインストールとスキャン実行
+      - name: Run FOSSA Scan & Test
+        uses: fossas/fossa-action@v1
+        with:
+          api-key: ${{ secrets.FOSSA_API_KEY }}
+          # test: true を指定すると、FOSSA側のライセンス・脆弱性ポリシーに違反した場合にCIを落とす（Quality Gate）
+          test: true
