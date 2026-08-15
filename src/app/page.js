@@ -5,16 +5,13 @@ import Dashboard from '@/components/Dashboard';
 export const dynamic = 'force-dynamic';
 
 function getFearAndGreedHistory() {
-  const driveDir = '/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/';
+  const driveDir = process.env.DRIVE_DIR;
   const fallbackDir = path.join(process.cwd(), '../fear_and_greed_index_for_jp/public/log');
-  
-  let targetDir = driveDir;
+
+  let targetDir = driveDir && fs.existsSync(driveDir) ? driveDir : fallbackDir;
+
   if (!fs.existsSync(targetDir)) {
-    targetDir = fallbackDir;
-  }
-  
-  if (!fs.existsSync(targetDir)) {
-    console.warn(`Data directory not found at ${driveDir} or ${fallbackDir}. Creating empty fallback list.`);
+    console.warn(`Data directory not found at ${driveDir || '(DRIVE_DIR unset)'} or ${fallbackDir}. Creating empty fallback list.`);
     return [];
   }
   

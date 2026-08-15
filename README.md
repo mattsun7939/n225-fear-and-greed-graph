@@ -56,10 +56,16 @@ npm install
 
 ### 2. データソースの準備
 本アプリは以下の優先順位で日次ログファイル（`data_YYYYMMDD.json`）を走査します:
-1. **Google Drive マウント**: `/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/`
-2. **ローカルフォールバック**: `../fear_and_greed_index_for_jp/public/log`
+1. **`DRIVE_DIR`で指定したディレクトリ**（Google Driveマウント等。コード側にデフォルト値はなく、環境ごとに `.env.local` で設定する）
+2. **ローカルフォールバック**: `../fear_and_greed_index_for_jp/public/log`（`DRIVE_DIR`が未設定、または存在しないパスの場合）
 
-> **Note**: ローカル環境で実行する場合は、同階層の `fear_and_greed_index_for_jp` で `node scripts/fetchData.js` を実行してログを生成しておくか、Google Drive上のログを参照可能な状態にしてください。
+> **Note**: ローカル環境で実行する場合は、同階層の `fear_and_greed_index_for_jp` で `node scripts/fetchData.js` を実行してログを生成しておくか、`DRIVE_DIR`で参照可能なログディレクトリを設定してください。
+
+`.env.example` を `.env.local` としてコピーし、`DRIVE_DIR` を設定してください（`.env.local` はgit管理対象外）。
+```bash
+cp .env.example .env.local
+# .env.local を編集して DRIVE_DIR を設定
+```
 
 ### 3. 開発用サーバーの起動
 ```bash
@@ -87,7 +93,7 @@ npm start
 | **VIデータ更新** | `node scripts/update-history-vi.js` | 日経平均VI（ボラティリティ指数）を再取得して再計算 |
 | **欠損日データ補間** | `node scripts/interpolate-missing-dates.js` | 欠損している日付のログを前後のデータから線形補間して生成 |
 
-> **Note**: これらのスクリプトは `/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/` 内のログを対象として実行されます。
+> **Note**: これらのスクリプトは `DRIVE_DIR`（`.env.local` で設定、必須）内のログを対象として実行されます。未設定の場合はエラーで終了します。
 
 ---
 
@@ -97,6 +103,7 @@ npm start
 n225-fear-and-greed-graph/
 ├── public/
 ├── scripts/
+│   ├── env.js                        # .env.local読み込み・DRIVE_DIR解決の共有ローダー
 │   ├── interpolate-missing-dates.js  # 欠損日の補間
 │   ├── update-history-jpx.js         # JPX指標の再取得・更新
 │   ├── update-history-margin.js      # 信用評価損益率の再取得・更新
@@ -109,6 +116,7 @@ n225-fear-and-greed-graph/
 │   │   └── globals.css               # グローバルスタイル
 │   └── components/
 │       └── Dashboard.js              # メインチャート・統計ダッシュボード (Client Component)
+├── .env.example                      # DRIVE_DIR設定例（.env.localとしてコピーして使用）
 └── package.json
 ```
 

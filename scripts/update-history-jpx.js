@@ -1,8 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-
-const DRIVE_DIR = '/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/';
+const { DRIVE_DIR } = require('./env');
 
 function getRating(score) {
   if (score >= 75) return 'Extreme Greed';

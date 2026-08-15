@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const yahooFinanceModule = require('yahoo-finance2').default;
 const yahooFinance = new yahooFinanceModule({ suppressNotices: ['yahooSurvey', 'ripHistorical'] });
-
-const DRIVE_DIR = '/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/';
+const { DRIVE_DIR } = require('./env');
 
 async function updateHistoryPrices() {
   console.log(`Scanning directory: ${DRIVE_DIR}`);

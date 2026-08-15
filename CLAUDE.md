@@ -36,8 +36,10 @@ node scripts/interpolate-missing-dates.js  # 欠損日のログを前後日か�
 ## アーキテクチャ
 
 **データソース**: 独自のデータ取得スクリプトは持たず（フェッチ自体は `fear_and_greed_index_for_jp/scripts/fetchData.js` が担当）、`src/app/page.js` の `getFearAndGreedHistory()` が以下の優先順でログディレクトリを探して読み込む:
-1. `/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/`（Chromebook上のGoogle Driveマウント、本番想定）
+1. `driveDir`（環境変数 `DRIVE_DIR` で設定。コード側にデフォルト値は持たない）— 設定されておらず、または存在しないパスの場合は2にフォールバック
 2. `../fear_and_greed_index_for_jp/public/log`（ローカルフォールバック、同階層に `fear_and_greed_index_for_jp` が無いと機能しない）
+
+`DRIVE_DIR` は `.env.local`（`.env.example` をコピーして作成、git管理対象外）で設定する。Next.js側（`page.js`）は自動読み込みされるため追加設定不要だが、`scripts/*.js` は Next.js CLIを経由しない単発実行のため `scripts/env.js`（共有の軽量`.env.local`ローダー、外部ライブラリ非依存）を介して同じ値を取得する。両者ともコード上に本番パスのデフォルト値は埋め込まれていない（環境依存の値をリポジトリに含めない方針）。
 
 いずれも存在しなければ空配列を返しダッシュボードは空表示になる。`export const dynamic = 'force-dynamic'` によりビルド時ではなくリクエスト時に毎回ファイルシステムを読み直す。
 
@@ -48,7 +50,7 @@ node scripts/interpolate-missing-dates.js  # 欠損日のログを前後日か�
 **`scripts/*.js`** — いずれも `fear_and_greed_index_for_jp/scripts/fetchData.js` とは独立した、既存ログ（Google Driveディレクトリ内の `data_*.json` 群）を**事後的に上書き・補完**するための単発実行スクリプト群:
 - `update-history-prices.js` / `update-history-jpx.js` / `update-history-margin.js` / `update-history-vi.js` は、既存ログファイルの日付範囲を調べてYahoo Financeまたは `nikkei225jp.com`（`fear_and_greed_index_for_jp/scripts/fetchData.js` と同じ `vm.runInContext()` によるスクレイピング手法）から該当期間のデータを再取得し、各ログファイルの対応フィールドを書き換える。指標の計算式を過去に遡って修正・再計算したい場合に使う想定。
 - `interpolate-missing-dates.js` は、ログファイルが存在しない日付（休日以外の欠損）を前後の値から補間して新規ログファイルを生成する。
-- いずれも `DRIVE_DIR`（`/mnt/chromeos/GoogleDrive/MyDrive/Linuxファイル/`）を直接ハードコードしており、Google Driveマウントが存在しない環境では `process.exit(1)` する。ローカル開発機で実行する場合は事前にマウント状況を確認すること。
+- いずれも `scripts/env.js` 経由で `DRIVE_DIR` を取得する。`DRIVE_DIR`（`.env.local`または環境変数）が未設定の場合、`scripts/env.js` がエラーメッセージを出して `process.exit(1)` する（page.js と異なりローカルフォールバックは持たない）。ローカル開発機で実行する場合は事前に `.env.local` へ `DRIVE_DIR` を設定すること。
 
 ## ドキュメント
 
