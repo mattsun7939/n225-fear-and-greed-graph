@@ -59,24 +59,9 @@ export default function Dashboard({ initialHistory }) {
   const [selectedHoverData, setSelectedHoverData] = useState(null);
   const [showNikkei, setShowNikkei] = useState(true);
 
-  // If no data
-  if (!initialHistory || initialHistory.length === 0) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-zinc-300 p-6">
-        <AlertCircle className="w-16 h-16 text-rose-500 mb-4 animate-pulse" />
-        <h2 className="text-2xl font-bold mb-2">No Sentiment Data Available</h2>
-        <p className="text-zinc-500 text-center max-w-md">
-          Please run the fetchData script in the Japanese Fear & Greed Index project directory first to populate index logs.
-        </p>
-      </div>
-    );
-  }
-
-  // Latest entry
-  const latestData = initialHistory[initialHistory.length - 1];
-
   // Filter history based on timeframe
   const filteredHistory = useMemo(() => {
+    if (!initialHistory || initialHistory.length === 0) return [];
     if (timeframe === '1M') {
       return initialHistory.slice(-30);
     } else if (timeframe === '3M') {
@@ -115,6 +100,22 @@ export default function Dashboard({ initialHistory }) {
       totalDays: filteredHistory.length
     };
   }, [filteredHistory]);
+
+  // If no data
+  if (!initialHistory || initialHistory.length === 0) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-zinc-300 p-6">
+        <AlertCircle className="w-16 h-16 text-rose-500 mb-4 animate-pulse" />
+        <h2 className="text-2xl font-bold mb-2">No Sentiment Data Available</h2>
+        <p className="text-zinc-500 text-center max-w-md">
+          Please run the fetchData script in the Japanese Fear & Greed Index project directory first to populate index logs.
+        </p>
+      </div>
+    );
+  }
+
+  // Latest entry
+  const latestData = initialHistory[initialHistory.length - 1];
 
   const activeHoverData = selectedHoverData || latestData;
 
